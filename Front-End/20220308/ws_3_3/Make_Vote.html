@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>투표 생성</title>
+        <link rel="stylesheet" href="./css/vote.css" />
+        <script type="text/javascript" src="./js/vote.js"></script>
+    </head>
+
+    <body>
+        <div class="vote">
+            <h3 class="vote-title">투표 만들기</h3>
+            <div class="vote-content">
+                <form action="">
+                    <div class="vote-question">
+                        <label>질문 내용</label>
+                        <input type="text" id="question" name="question" placeholder="질문내용..." />
+                    </div>
+                    <div class="vote-answer">
+                        <label>답변 항목</label>
+                        <button type="button" id="btn-add" class="button">추가</button>
+                    </div>
+                    <div id="vote-answer-list">
+                        <div class="vote-answer-item">
+                            <input type="text" name="answer" />
+                        </div>
+                    </div>
+                    <div class="vote-make">
+                        <button type="button" id="btn-make" class="button btn-primary">투표 생성</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </body>
+</html>
