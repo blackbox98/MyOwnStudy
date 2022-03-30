@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Map</title>
+    <link rel="shortcut icon" href="./img/favicon.ico" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="./js/main.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+
+            var cafeArea = {
+                "서울": ["역삼점", "선릉점"],
+                "대전": ["학하점", "봉명점"],
+                "구미": ["연수원점", "구미사업장"],
+                "광주": ["하남산단점", "광주역점"],
+                "부울경": ["부산사업장점", "녹산산단점"]
+            };
+
+            var officePosition = {
+                "역삼점": { "lat": 37.500613, "lng": 127.036431 },
+                "선릉점": { "lat": 37.504268, "lng": 127.048188 },
+                "학하점": { "lat": 36.355360, "lng": 127.298294 },
+                "봉명점": { "lat": 36.358843, "lng": 127.344192 },
+                "연수원점": { "lat": 36.098594, "lng": 128.389770 },
+                "구미사업장": { "lat": 36.109553, "lng": 128.415011 },
+                "하남산단점": { "lat": 35.204279, "lng": 126.807198 },
+                "광주역점": { "lat": 35.165476, "lng": 126.909216 },
+                "부산사업장점": { "lat": 35.095765, "lng": 128.856344 },
+                "녹산산단점": { "lat": 35.093641, "lng": 128.855679 }
+            };
+
+            var officeAddress = {
+                "역삼점": "서울특별시+강남구+역삼동+테헤란로+212",
+                "선릉점": "서울특별시 강남구 역삼동 테헤란로 334 LG 화재빌딩",
+                "학하점": "대전광역시 유성구 덕명동 124",
+                "봉명점": "대전광역시 유성구 봉명동 대학로 60 봉명가든 6층",
+                "연수원점": "경상북도 구미시 공단동 259",
+                "구미사업장": "경상북도 구미시 임수동 94",
+                "하남산단점": "107 하남산단6번로 광산구 광주광역시",
+                "광주역점": "광주광역시 북구 중흥동 611",
+                "부산사업장점": "부산광역시 강서구 송정동 녹산산업중로 삼성전기 부산사업장사",
+                "녹산산단점": "부산광역시 강서구 송정동 삼성전기부속의원"
+            };
+
+            $(".dropdown-item.cafe_area").click(function () {
+                var selArea = $(this).text();
+                $("#areaBtn").text(selArea);
+                $("#officeBtn").text('지점선택');
+                var offices = cafeArea[selArea];
+                $("#office_div").empty();
+                $.each(offices, function (i, office) {
+                    $("#office_div").append('<label class="dropdown-item cafe_office">' + office + '</label>');
+                });
+            });
+
+
+
+            //officePosition의 lat, lng를 이용한 marker
+            $(document).on("click", ".dropdown-item.cafe_office", function () {
+                var selOffice = $(this).text();
+                $("#officeBtn").text(selOffice);
+                var office = officePosition[selOffice];
+                deleteMarkers();
+                var officemarker = {
+                    coords: { lat: office.lat, lng: office.lng },
+                    iconImage: null,
+                    content: selOffice
+                };
+                addMarker(officemarker);
+            });
+
+
+            //officeAddress의 주소를 이용하여 geocoding으로 lat, lng 얻어온 후 marker
+            // $(document).on("click", ".dropdown-item.cafe_office", function () {
+            //     var selOffice = $(this).text();
+            //     $("#officeBtn").text(selOffice);
+            //     var officeAddr = officeAddress[selOffice];
+
+            //     $.get("https://maps.googleapis.com/maps/api/geocode/json"
+            //         , {
+            //             key: '발급받은 APP KEY를 넣으시면 됩니다.', address: officeAddr
+            //         }, function (data, status) {
+            //             deleteMarkers();
+            //             var officemarker = {
+            //                 coords: { lat: data.results[0].geometry.location.lat, lng: data.results[0].geometry.location.lng },
+            //                 iconImage: null,
+            //                 content: selOffice
+            //             };
+            //             console.log(officemarker);
+            //             addMarker(officemarker);
+            //         }
+            //         , "json"
+            //     );//get
+            // });
+
+        });
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <!-- Brand/logo -->
+        <a class="navbar-brand" href="#"><img src="./img/ssafy_logo.png" alt="" srcset="">SSAFY Book Cafe</a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Links -->
+        <div class="collapse navbar-collapse justify-content-end" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">로그인</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">회원가입</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav" style="display: none;">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">로그아웃</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">내정보</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">관리자</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid mt-1 mb-5">
+        <div class="row col-lg-12">
+            <!-- 왼쪽 메뉴 영역 -->
+            <div class="col-lg-3">
+                <div class="text-center m-2">
+                    <img src="./img/noimg.png" class="rounded" alt="Cinque Terre" width="200px">
+                </div>
+                <div id="vote-btn-area" class="mb-2">
+                    <button type="button" class="btn btn-outline-primary btn-block" data-toggle="modal"
+                        data-target="#voteModal" data-backdrop="static">투표생성</button>
+                </div>
+                <div class="border border-sucees p-3 mb-2">
+                    <div id="vote-area" class="text-center font-weight-bold">투표영역</div>
+                </div>
+            </div>
+            <!-- 중앙 컨텐츠 영역-->
+            <div class="col-lg-9">
+                <div class="jumbotron mt-2 text-center">
+                    <h1>광고주 모심!!!</h1>
+                    <p>멋지게 광고해 드림요!!!</p>
+                </div>
+
+                <!-- Google Map start -->
+                <div class="text-center mb-2">
+                    <div class="dropdown">
+                        <div class="btn-group">
+                            <button type="button" id="areaBtn"
+                                class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                                data-toggle="dropdown">지역선택</button>
+                            <div class="dropdown-menu">
+                                <label class="dropdown-item cafe_area">서울</label>
+                                <label class="dropdown-item cafe_area">대전</label>
+                                <label class="dropdown-item cafe_area">구미</label>
+                                <label class="dropdown-item cafe_area">광주</label>
+                                <label class="dropdown-item cafe_area">부울경</label>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" id="officeBtn"
+                                class="btn btn-primary dropdown-toggle dropdown-toggle-split"
+                                data-toggle="dropdown">지점선택</button>
+                            <div id="office_div" class="dropdown-menu"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="map" style="width: 100%; height: 300px; margin: auto;" class="mb-3"></div>
+                <script defer
+                    src="https://maps.googleapis.com/maps/api/js?key=발급받은 APP KEY를 넣으시면 됩니다.&callback=initMap"></script>
+                <script>
+                    var multi = { lat: 37.5012743, lng: 127.039585 };
+                    var map;
+                    var markers = [];
+                    var infoWindow;
+
+                    function initMap() {
+                        map = new google.maps.Map(document.getElementById('map'), {
+                            center: multi, zoom: 15
+                        });
+
+                        infoWindow = new google.maps.InfoWindow;
+
+                        const myposition = "img/my_position.png";
+
+
+                        //멀티캠퍼스
+                        //const multimarker = new google.maps.Marker({coords: multi, content: '멀티캠퍼스', iconImage: myposition});
+
+                        var multimarker = {
+                            coords: multi,
+                            iconImage: myposition,
+                            content: '멀티캠퍼스(역삼)'
+                        };
+                        addMarker(multimarker);
+                        infoWindow.setPosition(multi);
+                        infoWindow.setContent('멀티캠퍼스.');
+                        infoWindow.open(map);
+
+
+                        // Geolocation
+                        // infoWindow = new google.maps.InfoWindow;
+                        // if (navigator.geolocation) {
+                        //     navigator.geolocation.getCurrentPosition(function (position) {
+                        //         var pos = {
+                        //             lat: position.coords.latitude,
+                        //             lng: position.coords.longitude
+                        //         };
+
+                        //         var mymarker = {
+                        //             coords: pos,
+                        //             iconImage: myposition,
+                        //             content: '현재위치'
+                        //         };
+                        //         addMarker(mymarker);
+
+                        //         infoWindow.setPosition(pos);
+                        //         infoWindow.setContent('현재 나의 위치.');
+                        //         infoWindow.open(map);
+                        //         map.setCenter(pos);
+                        //     }, function () {
+                        //         handleLocationError(true, infoWindow, map.getCenter());
+                        //     });
+                        // } else {
+                        //     handleLocationError(false, infoWindow, map.getCenter());
+                        // }
+
+                    }
+
+
+                    function handleLocationError(browserHasGeolocation, infoWindow, pos) {
+                        infoWindow.setPosition(pos);
+                        infoWindow.setContent(browserHasGeolocation ?
+                            'Error: Geolocation 서비스 실패.' :
+                            'Error: Geolocation을 지원하지 않는 브라우저.');
+                        infoWindow.open(map);
+                    }
+
+                    function addMarker(props) {
+                        const marker = new google.maps.Marker({
+                            position: new google.maps.LatLng(parseFloat(props.coords.lat), parseFloat(props.coords.lng)),
+                            map: map
+                        });
+                        map.setCenter(marker.getPosition());
+                        map.setZoom(15);
+
+                        if (props.iconImage) {
+                            marker.setIcon(props.iconImage);
+                        }
+
+                        if (props.content) {
+                            infoWindow = new google.maps.InfoWindow({
+                                content: props.content
+                            });
+
+                        }
+
+                        marker.addListener('click', function () {
+                            map.setZoom(17);
+                            map.setCenter(marker.getPosition());
+                            bounceMarker(marker);
+                        });
+                        markers.push(marker);
+                        setMapOnAll(map);
+                    }
+
+                    function bounceMarker(marker) {
+                        if (marker.getAnimation() !== null) {
+                            marker.setAnimation(null);
+                        } else {
+                            marker.setAnimation(google.maps.Animation.BOUNCE);
+                        }
+                    }
+
+                    function deleteMarkers() {
+                        clearMarkers();
+                        markers = [];
+                    }
+
+                    function clearMarkers() {
+                        setMapOnAll(null);
+                    }
+
+                    function setMapOnAll(map) {
+                        for (let i = 0; i < markers.length; i++) {
+                            markers[i].setMap(map);
+                        }
+                    }
+                </script>
+                <!-- Google Map end -->
+
+                <div>
+                    <h4>[프로그래밍]</h4>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-lg-3 p-2">
+                        <img src="./img/profile.png" class="rounded" alt="Cinque Terre" width="200px">
+                    </div>
+                    <div class="col-lg-3 p-2">
+                        <img src="./img/profile.png" class="rounded" alt="Cinque Terre" width="200px">
+                    </div>
+                    <div class="col-lg-3 p-2">
+                        <img src="./img/profile.png" class="rounded" alt="Cinque Terre" width="200px">
+                    </div>
+                    <div class="col-lg-3 p-2">
+                        <img src="./img/profile.png" class="rounded" alt="Cinque Terre" width="200px">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mt-2 mb-2">
+                            <h4>[인기글]</h4>
+                        </div>
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>글번호</th>
+                                    <th>제목</th>
+                                    <th>조회수</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>10</td>
+                                    <td>안녕하세요...... <span class="badge badge-danger">30</span></td>
+                                    <td>500</td>
+                                </tr>
+                                <tr>
+                                    <td>9</td>
+                                    <td>안녕하세요...... <span class="badge badge-info">25</span></td>
+                                    <td>400</td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>안녕하세요...... <span class="badge badge-dark">12</span></td>
+                                    <td>300</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div>
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mt-2 mb-2">
+                            <h4>[최신글]</h4>
+                        </div>
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>글번호</th>
+                                    <th>제목</th>
+                                    <th>조회수</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>10</td>
+                                    <td>안녕하세요......</td>
+                                    <td>500</td>
+                                </tr>
+                                <tr>
+                                    <td>9</td>
+                                    <td>안녕하세요......</td>
+                                    <td>400</td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>안녕하세요......</td>
+                                    <td>300</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-lg-12">
+            <div class="col-lg-12">
+                <ul class="nav justify-content-end">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">오시는길</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">개인정보방침</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">카페소개</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#">그냥메뉴</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 모달창 -->
+    <!-- Button to Open the Modal -->
+    <!-- The Modal -->
+    <div class="modal" id="voteModal">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <i class="fa fa-cloud mr-3"
+                        style="font-size:30px;color:lightblue;text-shadow:2px 2px 4px #000000;"></i>
+                    <h4 class="modal-title">투표 만들기</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <form action="">
+                        <div class="form-group">
+                            <label for="start-date"><i class='far fa-bell' style='font-size:19px;color:steelblue'></i>
+                                시작일
+                                <input type="date" class="form-control" id="start-date" name="start-date"></label>
+                            <label for="end-date" class="ml-4"> <i class='far fa-bell-slash'
+                                    style='font-size:19px;color:tomato'></i> 종료일
+                                <input type="date" class="form-control" id="end-date" name="end-date"></label>
+                        </div>
+                        <div class="form-group">
+                            <label for="question"><i class='fas fa-question' style='font-size:19px;color:palevioletred'>
+                                </i> 질문내용</label>
+                            <input type="text" class="form-control col-lg-10" placeholder="질문 제목 입력..." id="question"
+                                name="question">
+                        </div>
+                        <div class="form-group">
+                            <label><i class='fa fa-list-ul' style='font-size:19px;color:teal'></i> 답변항목</label>
+                            <button type="button" id="btn-add" class="btn btn-outline-info btn-sm">항목추가</button>
+                        </div>
+                        <div id="poll-answer-list" class="form-group">
+                            <div class="mb-1">
+                                <input type="text" class="form-control col-lg-10" name="answer">
+                            </div>
+                        </div>
+                        <div class="form-group text-right">
+                            <button type="button" id="btn-make" class="btn btn-primary">투표생성</button>
+                        </div>
+
+                    </form>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

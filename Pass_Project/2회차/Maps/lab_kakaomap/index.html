@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kakao Map</title>
+    <link rel="shortcut icon" href="img/favicon.ico" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="./js/main.js"></script>
+    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=발급받은 APP KEY를 넣으시면 됩니다."></script>
+    <script type="text/javascript">
+        var map, marker;
+        $(document).ready(function () {
+
+            // 초기 kakao map 설정 start
+            var container = document.getElementById('map'); //지도를 담을 영역의 DOM 레퍼런스
+            // var lat = 37.5012743;
+            // var lng = 127.039585;
+            var locPosition = new kakao.maps.LatLng(37.5012743, 127.039585); // (멀티캠퍼스)
+            var options = { //지도를 생성할 때 필요한 기본 옵션
+                center: locPosition, //지도의 중심좌표. 
+                level: 3 //지도의 레벨(확대, 축소 정도)
+            };
+
+            map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
+
+            // HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
+            if (navigator.geolocation) {
+
+                // GeoLocation을 이용해서 접속 위치를 얻어옵니다
+                navigator.geolocation.getCurrentPosition(function (position) {
+
+                    var lat = position.coords.latitude, // 위도
+                        lon = position.coords.longitude; // 경도
+
+                    locPosition = new kakao.maps.LatLng(lat, lon); // 마커가 표시될 위치를 geolocation으로 얻어온 좌표로 생성합니다
+                    var message = '<div style="padding:5px;">현재위치인가요?!</div>'; // 인포윈도우에 표시될 내용입니다
+
+                    // 마커와 인포윈도우를 표시합니다
+                    displayMarker(locPosition, message);
+
+                });
+
+            } else { // HTML5의 GeoLocation을 사용할 수 없을때 마커 표시 위치와 인포윈도우 내용을 설정합니다
+
+                locPosition = new kakao.maps.LatLng(33.450701, 126.570667);
+                var message = 'geolocation을 사용할수 없어요..';
+
+                displayMarker(locPosition, message);
+            }
+            // 초기 kakao map 설정 end
+
+            var cafeArea = {
+                "서울": ["역삼점", "선릉점"],
+                "대전": ["학하점", "봉명점"],
+                "구미": ["연수원점", "구미사업장"],
+                "광주": ["하남산단점", "광주역점"],
+                "부울경": ["부산사업장점", "녹산산단점"]
+            };
+
+            var officePosition = {
+                "역삼점": { "lat": 37.500613, "lng": 127.036431 },
+                "선릉점": { "lat": 37.504268, "lng": 127.048188 },
+                "학하점": { "lat": 36.355360, "lng": 127.298294 },
+                "봉명점": { "lat": 36.358843, "lng": 127.344192 },
+                "연수원점": { "lat": 36.098594, "lng": 128.389770 },
+                "구미사업장": { "lat": 36.109553, "lng": 128.415011 },
+                "하남산단점": { "lat": 35.204279, "lng": 126.807198 },
+                "광주역점": { "lat": 35.165476, "lng": 126.909216 },
+                "부산사업장점": { "lat": 35.095765, "lng": 128.856344 },
+                "녹산산단점": { "lat": 35.093641, "lng": 128.855679 }
+            };
+
+            var officeAddress = {
+                "역삼점": "서울특별시+강남구+역삼동+테헤란로+212",
+                "선릉점": "서울특별시 강남구 역삼동 테헤란로 334 LG 화재빌딩",
+                "학하점": "대전광역시 유성구 덕명동 124",
+                "봉명점": "대전광역시 유성구 봉명동 대학로 60 봉명가든 6층",
+                "연수원점": "경상북도 구미시 공단동 259",
+                "구미사업장": "경상북도 구미시 임수동 94",
+                "하남산단점": "107 하남산단6번로 광산구 광주광역시",
+                "광주역점": "광주광역시 북구 중흥동 611",
+                "부산사업장점": "부산광역시 강서구 송정동 녹산산업중로 삼성전기 부산사업장사",
+                "녹산산단점": "부산광역시 강서구 송정동 삼성전기부속의원"
+            };
+
+            $(".dropdown-item.cafe_area").click(function () {
+                var selArea = $(this).text();
+                $("#areaBtn").text(selArea);
+                $("#officeBtn").text('지점선택');
+                var offices = cafeArea[selArea];
+                $("#office_div").empty();
+                $.each(offices, function (i, office) {
+                    $("#office_div").append('<label class="dropdown-item cafe_office">' + office + '</label>');
+                });
+            });
+
+            //officePosition의 lat, lng를 이용한 marker
+            $(document).on("click", ".dropdown-item.cafe_office", function () {
+                var selOffice = $(this).text();
+                $("#officeBtn").text(selOffice);
+                var office = officePosition[selOffice];
+
+
+                // 이동할 위도 경도 위치를 생성합니다 
+                var moveLatLon = new kakao.maps.LatLng(office.lat, office.lng);
+                var message = `<div style="padding:5px;">${selOffice}</div>`;
+
+                // 지도 중심을 부드럽게 이동시킵니다
+                // 만약 이동할 거리가 지도 화면보다 크면 부드러운 효과 없이 이동합니다
+                map.panTo(moveLatLon);
+
+                displayMarker(moveLatLon, message);
+            });
+        });
+
+        function displayMarker(locPosition, message) {
+            if (marker)
+                marker.setMap(null); // 기존 maker 제거
+
+            var imageSrc = 'img/my_position.png', // 마커이미지의 주소입니다    
+                imageSize = new kakao.maps.Size(50, 70), // 마커이미지의 크기입니다
+                imageOption = { offset: new kakao.maps.Point(27, 69) }; // 마커이미지의 옵션입니다. 마커의 좌표와 일치시킬 이미지 안에서의 좌표를 설정합니다.
+
+            // 마커의 이미지정보를 가지고 있는 마커이미지를 생성합니다
+            var markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize, imageOption);
+
+            // 마커를 생성합니다
+            marker = new kakao.maps.Marker({
+                map: map,
+                position: locPosition,
+                image: markerImage
+            });
+
+            var iwContent = message, // 인포윈도우에 표시할 내용
+                iwRemoveable = true;
+
+            // 인포윈도우를 생성합니다
+            var infowindow = new kakao.maps.InfoWindow({
+                content: iwContent,
+                removable: iwRemoveable
+            });
+
+            // 인포윈도우를 마커위에 표시합니다 
+            infowindow.open(map, marker);
+
+            // 지도 중심좌표를 접속위치로 변경합니다
+            map.setCenter(locPosition);
+        }
+    </script>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <!-- Brand/logo -->
+        <a class="navbar-brand" href="#"><img src="./img/ssafy_logo.png" alt="" srcset="">SSAFY Book Cafe</a>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Links -->
+        <div class="collapse navbar-collapse justify-content-end" id="collapsibleNavbar">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">로그인</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">회원가입</a>
+                </li>
+            </ul>
+            <ul class="navbar-nav" style="display: none;">
+                <li class="nav-item">
+                    <a class="nav-link" href="#">로그아웃</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">내정보</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#">관리자</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div class="container-fluid mt-1 mb-5">
+        <div class="row col-lg-12">
+            <!-- 왼쪽 메뉴 영역 -->
+            <div class="col-lg-3">
+                <div class="text-center m-2">
+                    <img src="./img/noimg.png" class="rounded" alt="Cinque Terre" width="200px">
+                </div>
+                <div id="vote-btn-area" class="mb-2">
+                    <button type="button" class="btn btn-outline-primary btn-block" data-toggle="modal"
+                        data-target="#voteModal" data-backdrop="static">투표생성</button>
+                </div>
+                <div class="border border-sucees p-3 mb-2">
+                    <div id="vote-area" class="text-center font-weight-bold">투표영역</div>
+                </div>
+            </div>
+            <!-- 중앙 컨텐츠 영역-->
+            <div class="col-lg-9">
+                <div class="jumbotron mt-2 text-center">
+                    <h1>광고주 모심!!!</h1>
+                    <p>멋지게 광고해 드림요!!!</p>
+                </div>
+
+                <!-- Kakao Map start -->
+                <div class="text-center mb-2">
+                    <div class="dropdown">
+                        <div class="btn-group">
+                            <button type="button" id="areaBtn"
+                                class="btn btn-warning dropdown-toggle dropdown-toggle-split"
+                                data-toggle="dropdown">지역선택</button>
+                            <div class="dropdown-menu">
+                                <label class="dropdown-item cafe_area">서울</label>
+                                <label class="dropdown-item cafe_area">대전</label>
+                                <label class="dropdown-item cafe_area">구미</label>
+                                <label class="dropdown-item cafe_area">광주</label>
+                                <label class="dropdown-item cafe_area">부울경</label>
+                            </div>
+                        </div>
+                        <div class="btn-group">
+                            <button type="button" id="officeBtn"
+                                class="btn btn-warning dropdown-toggle dropdown-toggle-split"
+                                data-toggle="dropdown">지점선택</button>
+                            <div id="office_div" class="dropdown-menu"></div>
+                        </div>
+                    </div>
+                </div>
+                <div id="map" style="width: 100%; height: 300px; margin: auto;" class="mb-3"></div>
+                <!-- Kakao Map end -->
+
+                <div>[프로그래밍]</div>
+                <div class="row mt-2">
+                    <div class="col-lg-3 p-2">
+                        <img src="./img/profile.png" class="rounded" alt="Cinque Terre" width="200px">
+                    </div>
+                    <div class="col-lg-3 p-2">
+                        <img src="./img/profile.png" class="rounded" alt="Cinque Terre" width="200px">
+                    </div>
+                    <div class="col-lg-3 p-2">
+                        <img src="./img/profile.png" class="rounded" alt="Cinque Terre" width="200px">
+                    </div>
+                    <div class="col-lg-3 p-2">
+                        <img src="./img/profile.png" class="rounded" alt="Cinque Terre" width="200px">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="mt-2 mb-2">[인기글]</div>
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>글번호</th>
+                                    <th>제목</th>
+                                    <th>조회수</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>10</td>
+                                    <td>안녕하세요...... <span class="badge badge-danger">30</span></td>
+                                    <td>500</td>
+                                </tr>
+                                <tr>
+                                    <td>9</td>
+                                    <td>안녕하세요...... <span class="badge badge-info">25</span></td>
+                                    <td>400</td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>안녕하세요...... <span class="badge badge-dark">12</span></td>
+                                    <td>300</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div>
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item"><a class="page-link" href="#">Previous</a></li>
+                                <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="mt-2 mb-2">[최신글]</div>
+                        <table class="table table-dark table-hover">
+                            <thead>
+                                <tr>
+                                    <th>글번호</th>
+                                    <th>제목</th>
+                                    <th>조회수</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>10</td>
+                                    <td>안녕하세요......</td>
+                                    <td>500</td>
+                                </tr>
+                                <tr>
+                                    <td>9</td>
+                                    <td>안녕하세요......</td>
+                                    <td>400</td>
+                                </tr>
+                                <tr>
+                                    <td>8</td>
+                                    <td>안녕하세요......</td>
+                                    <td>300</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row col-lg-12">
+            <div class="col-lg-12">
+                <ul class="nav justify-content-end">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">오시는길</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">개인정보방침</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">카페소개</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link disabled" href="#">그냥메뉴</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 모달창 -->
+    <!-- Button to Open the Modal -->
+    <!-- The Modal -->
+    <div class="modal" id="voteModal">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <i class="fa fa-cloud mr-3"
+                        style="font-size:30px;color:lightblue;text-shadow:2px 2px 4px #000000;"></i>
+                    <h4 class="modal-title">투표 만들기</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <form action="">
+                        <div class="form-group">
+                            <label for="start-date"><i class='far fa-bell' style='font-size:19px;color:steelblue'></i>
+                                시작일
+                                <input type="date" class="form-control" id="start-date" name="start-date"></label>
+                            <label for="end-date" class="ml-4"> <i class='far fa-bell-slash'
+                                    style='font-size:19px;color:tomato'></i> 종료일
+                                <input type="date" class="form-control" id="end-date" name="end-date"></label>
+                        </div>
+                        <div class="form-group">
+                            <label for="question"><i class='fas fa-question' style='font-size:19px;color:palevioletred'>
+                                </i> 질문내용</label>
+                            <input type="text" class="form-control col-lg-10" placeholder="질문 제목 입력..." id="question"
+                                name="question">
+                        </div>
+                        <div class="form-group">
+                            <label><i class='fa fa-list-ul' style='font-size:19px;color:teal'></i> 답변항목</label>
+                            <button type="button" id="btn-add" class="btn btn-outline-info btn-sm">항목추가</button>
+                        </div>
+                        <div id="poll-answer-list" class="form-group">
+                            <div class="mb-1">
+                                <input type="text" class="form-control col-lg-10" name="answer">
+                            </div>
+                        </div>
+                        <div class="form-group text-right">
+                            <button type="button" id="btn-make" class="btn btn-primary">투표생성</button>
+                        </div>
+
+                    </form>
+                </div>
+
+                <!-- Modal footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
