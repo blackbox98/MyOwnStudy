@@ -1,0 +1,38 @@
+-- txt 파일 테이블에 넣기
+
+load data infile 'c:\\data\\test.txt'		-- 파일 위치
+into table [테이블명] character set utf8mb4	-- insert 할 테이블명
+fields terminated by ','			-- column을 나누는 구분자 (tab일 경우 '\t')
+-- enclosed by '"'
+lines terminated by '\r\n';			-- row를 나누는 구분자
+-- ignore 1 rows;
+
+-- csv 파일 테이블에 넣기
+
+load data infile 'c:\\data\\test.csv'
+into table [테이블명] character set utf8mb4
+fields terminated by ','
+enclosed by '"'
+lines terminated by '\r\n'
+ignore 1 rows; -- 열 이름 무시하고 테이블에 행 가져오기 (첫 줄 무시)
+
+-- 테스트
+create table test (
+  no int,
+  name varchar(10),
+  price int,
+  cnt int
+);
+
+load data infile 'C:\\ProgramData\\MySQL\\MySQL Server 8.0\\Uploads\\test.txt' 
+into table test character set utf8mb4 
+fields terminated by '\t' 
+lines terminated by '\r\n' 
+ignore 1 rows;
+
+
+
+** Error Code: 1290. The MySQL server is running with the --secure-file-priv option so it cannot execute this statement 오류 발생 시.
+** my.ini
+secure-file-priv="C:/ProgramData/MySQL/MySQL Server 8.0/Uploads"
+secure-file-priv=""로 변경하면 모든 폴더에서 가능.
