@@ -24,19 +24,19 @@
 
 - 상 / 중 / 하
 
-  ![기술스택_상중하](images\Portfolio_Tips\TechnicalStack_High_Middle_Low.PNG)
+  ![기술스택_상중하](images/Portfolio_Tips/TechnicalStack_High_Middle_Low.PNG)
 
 - ⭐⭐⭐⭐⭐ 별점
 
-  ![기술스택_별점](images\Portfolio_Tips\TechnicalStack_Star.PNG)
+  ![기술스택_별점](images/Portfolio_Tips/TechnicalStack_Star.PNG)
 
 - 나열
 
-  ![기술스택_나열](images\Portfolio_Tips\TechnicalStack_List.PNG)
+  ![기술스택_나열](images/Portfolio_Tips/TechnicalStack_List.PNG)
 
 - % 및 설명
 
-  ![기술스택_퍼센테이지_및_설명](images\Portfolio_Tips\TechnicalStack_Total.PNG)
+  ![기술스택_퍼센테이지_및_설명](images/Portfolio_Tips/TechnicalStack_Total.PNG)
 <br>
 
 # 모든 키워드에 대해 3-depth 사전 질문
