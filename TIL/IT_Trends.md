@@ -3,14 +3,14 @@
 - 미국의 정보 및 기술 자문 회사
 - 보고서와 자문 서비스를 판매
 - Hype Cycle(솔루션)을 제공하여 시장의 기대 값 예측
-<br>
+<br/>
 
 # 삼성 SDS
 
 - 삼성 그룹의 ICT 기업
 - 솔루션 & 플랫폼 & IT 서비스 제공
 - 매년 IT 기술 트렌드를 제공하여, 현재 삼성에서 주목하고 있는 기술을 소개
-<br>
+<br/>
 
 # Strategic Technology Trends
 
@@ -61,7 +61,7 @@
 - Gartner Top 10 Strategic Technology Trends (2023)
 
   ![Top_10_Strategic_Technology_Trends_for_2023](images/IT_Trends/Top_10_Strategic_Technology_Trends_for_2023.jpg)
-<br>
+<br/>
 
 # AI 기술 발전이 끼치는 영향
 
