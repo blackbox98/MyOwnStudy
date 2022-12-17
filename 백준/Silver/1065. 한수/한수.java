@@ -17,11 +17,11 @@ public class Main {
         } else {
             cnt = 99;
             for (int i = 100; i <= n; i++) {
-                int hun = i / 100;
-                int ten = (i / 10) % 10;
-                int one = i % 10;
+                int hundreds = i / 100; // 백의 자리
+                int tens = (i / 10) % 10; // 십의 자리
+                int units = i % 10; // 일의 자리
 
-                if ((hun - ten) == (ten - one)) {
+                if ((hundreds - tens) == (tens - units)) { // 각 자리가 등차수열을 이룬 경우
                     cnt++;
                 }
             }
