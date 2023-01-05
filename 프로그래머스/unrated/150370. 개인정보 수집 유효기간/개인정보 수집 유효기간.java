@@ -23,10 +23,6 @@ class Solution {
             dateTotal += term * 28 - 1;
             if (todayTotal > dateTotal) answerList.add(i + 1);
         }
-        int[] answer = new int[answerList.size()];
-        for (int i = 0; i < answer.length; i++) {
-            answer[i] = answerList.get(i);
-        }
-        return answer;
+        return answerList.stream().mapToInt(integer -> integer).toArray();
     }
 }
