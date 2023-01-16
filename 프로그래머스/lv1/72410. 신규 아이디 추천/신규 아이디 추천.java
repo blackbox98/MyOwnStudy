@@ -1,18 +1,12 @@
 class Solution {
     public String solution(String new_id) {
         String answer = new_id.toLowerCase()
-                .replaceAll("[^\\w-_.]", "")
-                .replaceAll("[.]{2,}", ".")
-                .replaceAll("^[.]|[.]$", "");
-        if (answer.equals("")) return "aaa";
-        if (answer.length() >= 16) {
-            answer = answer.substring(0, 15).replaceAll("[.]$", "");
-        }
-        if (answer.length() <= 2) {
-            while (answer.length() < 3) {
-                answer += answer.charAt(answer.length() - 1);
-            }
-        }
+            .replaceAll("[^\\w-_.]", "")
+            .replaceAll("[.]{2,}", ".")
+            .replaceAll("^[.]|[.]$", "");
+        if (answer.equals("")) answer = "a";
+        if (answer.length() >= 16) answer = answer.substring(0, 15).replaceAll("[.]$", "");
+        if (answer.length() <= 2) while (answer.length() < 3) answer += answer.charAt(answer.length() - 1);
         return answer;
     }
 }
