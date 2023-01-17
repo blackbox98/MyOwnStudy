@@ -24,12 +24,7 @@ class Solution {
             failure.put(i, (double) cnt / reached);
         }
         List<Integer> list = new ArrayList<>(failure.keySet());
-        list.sort(new Comparator<Integer>() {
-            @Override
-            public int compare(Integer o1, Integer o2) {
-                return failure.get(o2).compareTo(failure.get(o1));
-            }
-        });
+        list.sort((o1, o2) -> failure.get(o2).compareTo(failure.get(o1)));
         for (int i = 0; i < N; i++) {
             answer[i] = list.get(i);
         }
