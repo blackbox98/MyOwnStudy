@@ -1,20 +1,18 @@
 class Solution {
     public String[] solution(int n, int[] arr1, int[] arr2) {
         String[] answer = new String[n];
-        String s, tmp;
+        String tmp;
         for (int i = 0; i < n; i++) {
-            s = Integer.toBinaryString(arr1[i] | arr2[i]);
-            tmp = "";
-            if (s.length() != n) {
-                for (int j = 0; j < n - s.length(); j++) {
-                    tmp += " ";
+            answer[i] = "";
+            tmp = Integer.toBinaryString(arr1[i] | arr2[i]);
+            if (tmp.length() < n) {
+                for (int j = 0; j < n - tmp.length(); j++) {
+                    answer[i] += " ";
                 }
             }
-            for (int j = 0; j < s.length(); j++) {
-                if (s.charAt(j) == '0') tmp += " ";
-                else tmp += "#";
-            }
-            answer[i] = tmp;
+            answer[i] += tmp;
+            answer[i] = answer[i].replaceAll("0", " ");
+            answer[i] = answer[i].replaceAll("1", "#");
         }
         return answer;
     }
