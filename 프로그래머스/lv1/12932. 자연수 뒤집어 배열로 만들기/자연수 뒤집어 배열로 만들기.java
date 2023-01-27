@@ -10,5 +10,6 @@ class Solution {
             answer.add(c - '0');
         }
         return answer.stream().mapToInt(Integer::intValue).toArray();
+        // return new StringBuilder().append(n).reverse().chars().map(Character::getNumericValue).toArray();
     }
 }
