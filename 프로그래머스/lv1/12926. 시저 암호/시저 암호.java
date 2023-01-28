@@ -2,14 +2,14 @@ class Solution {
     public String solution(String s, int n) {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < s.length(); i++) {
-            if (s.charAt(i) == ' ') {
+            char c = s.charAt(i);
+            if (c == ' ') {
                 sb.append(" ");
             } else {
-                int chNum = s.charAt(i) + n;
-                if (s.charAt(i) >= 'a') {
-                    sb.append((char) (chNum > 'z' ? chNum - 26 : chNum));
+                if (Character.isLowerCase(c)) {
+                    sb.append((char) ((c - 'a' + n) % 26 + 'a'));
                 } else {
-                    sb.append((char) (chNum > 'Z' ? chNum - 26 : chNum));
+                    sb.append((char) ((c - 'A' + n) % 26 + 'A'));
                 }
             }
         }
