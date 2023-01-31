@@ -1,3 +1,6 @@
+// import java.time.LocalDate;
+// import java.time.format.TextStyle;
+// import java.util.Locale;
 class Solution {
     public String solution(int a, int b) {
         String[] dayOfWeek = {"FRI", "SAT", "SUN", "MON", "TUE", "WED", "THU"};
@@ -7,5 +10,6 @@ class Solution {
             plusDay += daysOfMonth[i - 1];
         }
         return dayOfWeek[plusDay % 7];
+        // return LocalDate.of(2016, a, b).getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.US).toUpperCase();
     }
 }
