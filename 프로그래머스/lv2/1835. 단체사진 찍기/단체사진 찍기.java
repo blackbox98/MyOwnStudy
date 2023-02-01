@@ -13,24 +13,22 @@ class Solution {
     
     static void solve(char[] sel, boolean[] v, int k) {
         if (k == sel.length) {
-            StringBuilder result = new StringBuilder(new String(sel));
-            boolean flag = true;
+            String result = String.valueOf(sel);
             for (String condition : dataCopy) {
-                if (!flag) break;
-                int dif = Math.abs(result.indexOf(condition.substring(0, 1)) - result.indexOf(condition.substring(2, 3))) - 1;
+                int dif = Math.abs(result.indexOf(condition.charAt(0)) - result.indexOf(condition.charAt(2))) - 1;
                 switch (condition.charAt(3)) {
                     case '=':
-                        if (dif != condition.charAt(4) - '0') flag = false;
+                        if (dif != condition.charAt(4) - '0') return;
                         break;
                     case '<':
-                        if (dif >= condition.charAt(4) - '0') flag = false;
+                        if (dif >= condition.charAt(4) - '0') return;
                         break;
                     case '>':
-                        if (dif <= condition.charAt(4) - '0') flag = false;
+                        if (dif <= condition.charAt(4) - '0') return;
                         break;
                 }
             }
-            if (flag) answer++;
+            answer++;
             return;
         }
         for (int i = 0; i < v.length; i++) {
