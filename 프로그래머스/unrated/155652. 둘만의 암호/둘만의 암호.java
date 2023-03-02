@@ -1,29 +1,20 @@
-import java.util.Stack;
-
 class Solution {
     public String solution(String s, String skip, int index) {
         StringBuilder answer = new StringBuilder();
-        Stack<Character> skipChar = new Stack<>();
-        for (char c : skip.toCharArray()) {
-            skipChar.push(c);
-        }
         for (char c : s.toCharArray()) {
-            int plus = 0;
-            char target = ' ';
+            int cNum = c;
             int cnt = index;
             while (cnt > 0) {
                 cnt--;
-                plus = (plus + 1) % 26;
-                target = (char) ((c + plus - 'a') % 26 + 'a');
+                cNum = (cNum + 1) > 'z' ? 'a' : (cNum + 1);
                 while (true) {
-                    if (skipChar.contains(target)) {
-                        plus = (plus + 1) % 26;
-                        target = (char) ((c + plus - 'a') % 26 + 'a');
+                    if (skip.contains(String.valueOf((char) cNum))) {
+                        cNum = (cNum + 1) > 'z' ? 'a' : cNum + 1;
                     }
                     else break;
                 }
             }
-            answer.append(target);
+            answer.append((char) cNum);
         }
         return answer.toString();
     }
