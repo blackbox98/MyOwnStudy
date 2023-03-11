@@ -30,7 +30,10 @@ class Solution {
         for (int r = 1; r < map.length; r++) {
             for (int c = 1; c < map[r].length; c++) {
                 char target = map[r][c];
-                if (target != '.' && target == map[r - 1][c - 1] && target == map[r - 1][c] && target == map[r][c - 1]) result = true;
+                if (target != '.' && target == map[r - 1][c - 1] && target == map[r - 1][c] && target == map[r][c - 1]) {
+                    result = true;
+                    break;
+                }
             }
         }
         return result;
