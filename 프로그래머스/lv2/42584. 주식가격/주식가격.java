@@ -20,11 +20,9 @@ class Solution {
                 stack.push(new Price(i, price));
             }
         }
-        if (!stack.isEmpty()) {
-            while (!stack.isEmpty()) {
-                Price p = stack.pop();
-                answer[p.idx] = prices.length - 1 - p.idx;
-            }
+        while (!stack.isEmpty()) {
+            Price p = stack.pop();
+            answer[p.idx] = prices.length - 1 - p.idx;
         }
         return answer;
     }
