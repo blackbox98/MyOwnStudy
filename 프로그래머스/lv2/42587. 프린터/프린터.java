@@ -4,17 +4,17 @@ class Solution {
     public int solution(int[] priorities, int location) {
         int answer = 0;
         Queue<Integer> queue = new LinkedList<>();
-        Queue<Integer> cntPri = new PriorityQueue<>(Collections.reverseOrder());
+        Queue<Integer> topPri = new PriorityQueue<>(Collections.reverseOrder());
         for (int priority : priorities) {
             queue.offer(priority);
-            cntPri.offer(priority);
+            topPri.offer(priority);
         }
         while (!queue.isEmpty()) {
-            int top = cntPri.peek();
+            int top = topPri.peek();
             int target = queue.poll();
             if (target == top) {
                 answer++;
-                cntPri.poll();
+                topPri.poll();
                 if (location == 0) {
                     break;
                 }
