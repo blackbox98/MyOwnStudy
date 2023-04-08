@@ -9,11 +9,7 @@ class Solution {
                 break;
             }
         }
-        if (gcd == min) {
-            answer -= Math.max(w, h);
-        } else {
-            answer -= ((w / gcd) + (h / gcd) - 1) * gcd;
-        }
+        answer -= w + h - gcd;
         return answer;
     }
 }
