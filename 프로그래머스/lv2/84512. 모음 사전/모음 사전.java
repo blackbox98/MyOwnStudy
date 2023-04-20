@@ -1,40 +1,31 @@
 class Solution {
     static char[] dic = {'A', 'E', 'I', 'O', 'U'};
+    static int answer = 0;
+    static int size = dic.length;
+    static int idx = 0;
+    static String WORD;
+    static boolean find = false;
     
     public int solution(String word) {
-        int answer = 0;
-        int size = dic.length;
-        StringBuilder sb = new StringBuilder();
-        L : for (int a = 0; a < size; a++) {
-            sb.append(dic[a]);
-            answer++;
-            if (sb.toString().equals(word)) break L;
-            for (int b = 0; b < size; b++) {
-                sb.append(dic[b]);
-                answer++;
-                if (sb.toString().equals(word)) break L;
-                for (int c = 0; c < size; c++) {
-                    sb.append(dic[c]);
-                    answer++;
-                    if (sb.toString().equals(word)) break L;
-                    for (int d = 0; d < size; d++) {
-                        sb.append(dic[d]);
-                        answer++;
-                        if (sb.toString().equals(word)) break L;
-                        for (int e = 0; e < size; e++) {
-                            sb.append(dic[e]);
-                            answer++;
-                            if (sb.toString().equals(word)) break L;
-                            sb.deleteCharAt(sb.length() - 1);
-                        }
-                        sb.deleteCharAt(sb.length() - 1);
-                    }
-                    sb.deleteCharAt(sb.length() - 1);
-                }
-                sb.deleteCharAt(sb.length() - 1);
-            }
-            sb.deleteCharAt(sb.length() - 1);
-        }
+        WORD = word;
+        findIdx(new StringBuilder());
         return answer;
+    }
+    
+    private static void findIdx(StringBuilder target) {
+        if (find) return;
+        if (target.toString().equals(WORD)) {
+            answer = idx;
+            find = true;
+            return;
+        }
+        if (target.length() == size) return;
+        
+        for (int i = 0; i < size; i++) {
+            target.append(dic[i]);
+            idx++;
+            findIdx(target);
+            target.deleteCharAt(target.length() - 1);
+        }
     }
 }
