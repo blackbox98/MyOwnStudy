@@ -6,16 +6,14 @@ class Solution {
         Queue<Integer> q2 = new LinkedList<>();
         long sum1 = 0;
         long sum2 = 0;
-        for (int n : queue1) {
-            sum1 += n;
-            q1.offer(n);
-        }
-        for (int n : queue2) {
-            sum2 += n;
-            q2.offer(n);
+        for (int i = 0; i < queue1.length; i++) {
+            sum1 += queue1[i];
+            sum2 += queue2[i];
+            q1.offer(queue1[i]);
+            q2.offer(queue2[i]);
         }
         if ((sum1 + sum2) % 2 != 0) return -1;
-        
+
         int answer = 0;
         int size = queue1.length * 2;
         while (sum1 != sum2) {
