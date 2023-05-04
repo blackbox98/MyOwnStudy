@@ -1,5 +1,7 @@
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 class Solution {
@@ -9,13 +11,12 @@ class Solution {
         for (int n : tangerine) {
             map.put(n, map.getOrDefault(n, 0) + 1);
         }
-        int[] values = map.values().stream().mapToInt(n -> n).toArray();
-        Arrays.sort(values);
-        int sum = 0;
-        for (int i = values.length - 1; i >= 0; i--) {
-            sum += values[i];
+        List<Integer> valueList = new ArrayList<>(map.values());
+        valueList.sort(Collections.reverseOrder());
+        for (int value : valueList) {
+            k -= value;
             answer++;
-            if (sum >= k) break;
+            if (k <= 0) break;
         }
         return answer;
     }
