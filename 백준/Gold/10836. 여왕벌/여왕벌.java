@@ -53,11 +53,13 @@ public class Main {
     }
 
     private static void printMap() {
+        StringBuilder answer = new StringBuilder();
         for (int r = 0; r < M; r++) {
             for (int c = 0; c < M; c++) {
-                System.out.print(map[r][c] + " ");
+                answer.append(map[r][c] + " ");
             }
-            System.out.println();
+            answer.append("\n");
         }
+        System.out.println(answer);
     }
 }
