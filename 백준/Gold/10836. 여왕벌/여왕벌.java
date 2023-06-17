@@ -16,49 +16,31 @@ public class Main {
         N = Integer.parseInt(st.nextToken());
         map = new int[M][M];
         for (int r = 0; r < M; r++) Arrays.fill(map[r], 1);
-        int[] grow = new int[3];
-        for (int g = 0; g < N; g++) {
-            int sr = M - 1;
-            int sc = 1;
-            boolean turn = false;
+        for (int n = 0; n < N; n++) {
             st = new StringTokenizer(br.readLine());
-            grow[0] = Integer.parseInt(st.nextToken());
-            grow[1] = Integer.parseInt(st.nextToken());
-            grow[2] = Integer.parseInt(st.nextToken());
-            for (int i = 0; i < 3; i++) {
-                int n = grow[i];
-                if (!turn) {
-                    for (int r = sr; r >= 0; r--) {
-                        if (n == 0) {
-                            break;
-                        }
-                        map[r][0] += i;
-                        n--;
-                        sr--;
-                        if (sr < 0) {
-                            turn = true;
-                            break;
-                        }
-                    }
-                    if (n > 0) {
-                        for (int c = sc; c < M; c++) {
-                            map[0][c] += i;
-                            n--;
-                            sc++;
-                            if (n == 0) {
-                                break;
-                            }
-                        }
-                    }
-                } else {
-                    for (int c = sc; c < M; c++) {
-                        if (n == 0) {
-                            break;
-                        }
-                        map[0][c] += i;
-                        n--;
-                        sc++;
-                    }
+            int zero = Integer.parseInt(st.nextToken());
+            int one = Integer.parseInt(st.nextToken());
+            int two = Integer.parseInt(st.nextToken());
+            for (int i = M - 1; i > 0; i--) {
+                if (zero != 0) {
+                    zero--;
+                } else if (one != 0) {
+                    one--;
+                    map[i][0] += 1;
+                } else if (two != 0) {
+                    two--;
+                    map[i][0] += 2;
+                }
+            }
+            for (int i = 0; i < M; i++) {
+                if (zero != 0) {
+                    zero--;
+                } else if (one != 0) {
+                    one--;
+                    map[0][i] += 1;
+                } else if (two != 0) {
+                    two--;
+                    map[0][i] += 2;
                 }
             }
             for (int r = 1; r < M; r++) {
