@@ -31,21 +31,17 @@ public class Main {
                 int r = virus.r;
                 int c = virus.c;
                 int kind = virus.kind;
-                boolean infection = false;
                 for (int[] d : dir) {
                     int nr = r + d[0];
                     int nc = c + d[1];
                     if (nr >= 0 && nr < N && nc >= 0 && nc < N && map[nr][nc] == 0) {
-                        infection = true;
                         map[nr][nc] = kind;
                         addQueue.offer(new Virus(nr, nc, kind));
                     }
                 }
-                if (infection) addQueue.offer(virus);
             }
-            for (Virus virus : addQueue) {
-                pq.offer(virus);
-            }
+            if (map[X][Y] > 0) break;
+            pq.addAll(addQueue);
         }
         System.out.println(map[X][Y]);
     }
