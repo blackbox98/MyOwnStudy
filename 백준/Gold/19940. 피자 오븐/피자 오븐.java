@@ -7,7 +7,7 @@ import java.util.Queue;
 
 public class Main {
     static int[] btnValue = new int[]{60, 10, -10, 1, -1};
-    static String[] pressBtn = new String[61];
+    static int[][] pressBtn = new int[61][6];
 
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -16,11 +16,9 @@ public class Main {
         int T = Integer.parseInt(br.readLine());
         for (int tc = 0; tc < T; tc++) {
             int N = Integer.parseInt(br.readLine());
-            int[] answer = new int[5];
-            answer[0] = N / 60;
-            N %= 60;
+            int[] answer = Arrays.copyOf(pressBtn[N % 60], 6);
+            answer[0] += N / 60;
             for (int i = 0; i < 5; i++) {
-                answer[i] += pressBtn[N].charAt(i) - '0';
                 sb.append(answer[i]).append(" ");
             }
             sb.append("\n");
@@ -29,34 +27,22 @@ public class Main {
     }
 
     private static void pizzaOven() {
-        Arrays.fill(pressBtn, "99999");
-        pressBtn[0] = "00000";
-        Queue<Integer> queue = new LinkedList<>();
-        queue.offer(0);
+        Queue<int[]> queue = new LinkedList<>();
+        queue.offer(new int[6]);
+        boolean[] v = new boolean[61];
+        v[0] = true;
         while (!queue.isEmpty()) {
-            int time = queue.poll();
+            int[] curBtn = queue.poll();
             for (int i = 4; i >= 0; i--) {
-                int nextTime = time + btnValue[i];
-                if (nextTime < 0 || nextTime > 60) continue;
-                String curBtn = pressBtn[time];
-                char btn = (char) (curBtn.charAt(i) + 1);
-                curBtn = curBtn.substring(0, i) + btn + curBtn.substring(i + 1);
-                if (compareBtn(curBtn, pressBtn[nextTime])) {
-                    pressBtn[nextTime] = curBtn;
-                    queue.offer(nextTime);
-                }
+                int nextTime = curBtn[5] + btnValue[i];
+                if (0 > nextTime || nextTime > 60 || v[nextTime]) continue;
+                int[] nextBtn = Arrays.copyOf(curBtn, 6);
+                nextBtn[i]++;
+                nextBtn[5] = nextTime;
+                queue.offer(nextBtn);
+                v[nextTime] = true;
+                pressBtn[nextTime] = nextBtn;
             }
         }
-    }
-    
-    private static boolean compareBtn(String a, String b) {
-        int cntA = 0;
-        int cntB = 0;
-        for (int i = 0; i < 5; i++) {
-            cntA += a.charAt(i) - '0';
-            cntB += b.charAt(i) - '0';
-        }
-        if (cntA == cntB) return a.compareTo(b) < 0;
-        else return cntA < cntB;
     }
 }
