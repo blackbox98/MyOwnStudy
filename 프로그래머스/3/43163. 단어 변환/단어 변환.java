@@ -30,7 +30,7 @@ class Solution {
         }
         Queue<Integer> queue = new LinkedList<>();
         for (int i = 0; i < len; i++) {
-            if (!v[i] && getDiff(cur, words[i]) == 1) queue.offer(i);
+            if (!v[i] && isPossible(cur, words[i])) queue.offer(i);
         }
         while (cnt < len && !queue.isEmpty()) {
             int idx = queue.poll();
@@ -40,11 +40,11 @@ class Solution {
         }
     }
     
-    public int getDiff(String cur, String word) {
+    public boolean isPossible(String cur, String word) {
         int cnt = 0;
         for (int i = 0; i < cur.length(); i++) {
             if (cur.charAt(i) != word.charAt(i)) cnt++;
         }
-        return cnt;
+        return cnt == 1;
     }
 }
