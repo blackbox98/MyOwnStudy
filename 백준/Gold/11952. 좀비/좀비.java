@@ -5,8 +5,8 @@ import java.util.*;
 
 public class Main {
     static final long INF = Long.MAX_VALUE;
-    static int N, S, q;
-    static int[] diminished, cost;
+    static int N, S, p, q;
+    static int[] diminished;
     static List<Integer>[] list;
     static Queue<int[]> queue;
     static boolean[] v;
@@ -19,7 +19,7 @@ public class Main {
         int K = Integer.parseInt(st.nextToken());
         S = Integer.parseInt(st.nextToken());
         st = new StringTokenizer(br.readLine());
-        int p = Integer.parseInt(st.nextToken());
+        p = Integer.parseInt(st.nextToken());
         q = Integer.parseInt(st.nextToken());
         // 0 : 안전한 도시, 1 : 위험한 도시, 2 : 점령당한 도시
         diminished = new int[N + 1];
@@ -38,12 +38,9 @@ public class Main {
             list[e].add(s);
         }
         queue = new LinkedList<>();
-        cost = new int[N + 1];
-        Arrays.fill(cost, p);
         for (int i = 1; i <= N; i++) {
             if (diminished[i] == 2) checkNotSafe(i);
         }
-        cost[N] = 0;
         System.out.println(dijkstra());
     }
 
@@ -51,15 +48,14 @@ public class Main {
         queue.offer(new int[]{s, 0});
         v = new boolean[N + 1];
         v[s] = true;
-        cost[s] = 0;
         while (!queue.isEmpty()) {
             int[] cur = queue.poll();
             if (cur[1] == S) continue;
             for (int next : list[cur[0]]) {
-                if (v[next]) continue;
+                if (diminished[next] == 2 || v[next]) continue;
                 queue.offer(new int[]{next, cur[1] + 1});
                 v[next] = true;
-                cost[next] = q;
+                diminished[next] = 1;
             }
         }
     }
@@ -67,9 +63,9 @@ public class Main {
     private static long dijkstra() {
         long[] dist = new long[N + 1];
         Arrays.fill(dist, INF);
-        dist[1] = 0;
+        dist[1] = 0L;
         PriorityQueue<long[]> pq = new PriorityQueue<>(Comparator.comparingLong(o -> o[1]));
-        pq.offer(new long[]{1, 0});
+        pq.offer(new long[]{1, 0L});
         v = new boolean[N + 1];
         while (!pq.isEmpty()) {
             int curIdx = (int) pq.poll()[0];
@@ -77,11 +73,13 @@ public class Main {
             if (v[curIdx]) continue;
             v[curIdx] = true;
             for (int next : list[curIdx]) {
-                if (diminished[next] == 2 || v[next] || dist[next] <= dist[curIdx] + cost[next]) continue;
-                dist[next] = dist[curIdx] + cost[next];
+                if (diminished[next] == 2 || v[next]) continue;
+                int cost = diminished[next] == 0 ? p : q;
+                if (dist[next] <= dist[curIdx] + cost) continue;
+                dist[next] = dist[curIdx] + cost;
                 pq.offer(new long[]{next, dist[next]});
             }
         }
-        return dist[N];
+        return dist[N] - (diminished[N] == 0 ? p : q);
     }
 }
