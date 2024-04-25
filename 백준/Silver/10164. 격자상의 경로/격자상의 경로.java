@@ -12,7 +12,12 @@ public class Main {
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
         int K = Integer.parseInt(st.nextToken());
-        int[] kIdx = K == 0 ? new int[]{N - 1, M - 1} : new int[]{K / M, K % M == 0 ? M - 1 : K % M - 1};
+        int[] kIdx;
+        if (K == 0) kIdx = new int[]{N - 1, M - 1};
+        else {
+            if (K % M == 0) kIdx = new int[]{K / M - 1, M - 1};
+            else kIdx = new int[]{K / M, K % M - 1};
+        }
         dp = new int[N][M];
         dp[0][0] = 1;
         moveRobot(0, kIdx[0], 0, kIdx[1], 1);
